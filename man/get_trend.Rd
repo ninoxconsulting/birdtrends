@@ -4,16 +4,24 @@
 \alias{get_trend}
 \title{Generate trend based based on multiple draws of annual indices}
 \usage{
-get_trend(proj_data, start_yr = NA, end_yr = NA, method = "gmean")
+get_trend(
+  proj_data,
+  start_yr = NA,
+  end_yr = NA,
+  method = "gmean",
+  annual_variation = FALSE
+)
 }
 \arguments{
 \item{proj_data}{tibble of estimated indices drawn from fit_* function. Columns are draw, year, and proj_y}
 
 \item{start_yr}{numeric value of the first year in which trend will be calculated. Default is first available year within the dataset}
 
-\item{end_yr}{numeric vlaue representing the last year in which trend will be calculated. Default is first available year within the dataset}
+\item{end_yr}{numeric value representing the last year in which trend will be calculated. Default is first available year within the dataset}
 
 \item{method}{character of method used to calculate trend. Two methods available; geometric mean ("gmean" as default )or "lm" linear regression}
+
+\item{annual_variation}{logical Estimate trends that capture some of the annual variation in rate of change. If FALSE (default), then trends are estimated for a single time-period (start_yr : end_yr), if TRUE, then trends are estimated for all possible 1-yr intervals for the selected time period. For example, if start_yr = 2012 and end_yr = 2022, then there will be 10 sets of annual trends estimated (2012:2013, 2013:2014, etc.)}
 }
 \value{
 tibble with estimated trend and percent_trend for each draw
