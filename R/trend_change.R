@@ -49,7 +49,7 @@ trend_change <- function(
 
   # for each draw subtract target year from ref year (2024) - 2014
   tyears <- dplyr::filter(projected_trends, year %in% c(ref_year, targ_year)) |>
-    dplyr::select(-proj_y)
+    dplyr::select(-proj_y, -trend_end_year, -trend_log, -perc_trend, -trend_start_year,  -starting_pred_ind)
 
 
   tyears <-  tidyr::pivot_wider(tyears, values_from = pred_ind, names_from = year)
