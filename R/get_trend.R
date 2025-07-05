@@ -4,7 +4,7 @@
 #' @param start_yr numeric value of the first year in which trend will be calculated. Default is first available year within the dataset
 #' @param end_yr numeric value representing the last year in which trend will be calculated. Default is first available year within the dataset
 #' @param method character of method used to calculate trend. Two methods available; geometric mean ("gmean" as default )or "lm" linear regression
-#' @param annual_variation logical Estimate trends that capture some of the annual variation in rate of change. If FALSE (default), then trends are estimated for a single time-period (start_yr : end_yr), if TRUE, then trends are estimated for all possible 1-yr intervals for the selected time period. For example, if start_yr = 2012 and end_yr = 2022, then there will be 10 sets of annual trends estimated (2012:2013, 2013:2014, etc.)
+#' @param annual_variation logical estimate trends that capture some of the annual variation in rate of change. If FALSE (default), then trends are estimated for a single time-period (start_yr : end_yr), if TRUE, then trends are estimated for all possible 1-yr intervals for the selected time period. For example, if start_yr = 2012 and end_yr = 2022, then there will be 10 sets of annual trends estimated (2012:2013, 2013:2014, etc.)
 #'
 #' @return tibble with estimated trend and percent_trend for each draw
 #' @export
@@ -41,10 +41,10 @@ get_trend <- function(proj_data, start_yr = NA, end_yr = NA, method = "gmean", a
     end_yr <- max_yr
   } else if(end_yr > max_yr) {
     message("`max_year` is beyond the date range, using maximum year of ",
-            "the data (", end_yr <- max_year, ") instead.")
+            "the data (", end_yr <- max_yr, ") instead.")
   }
 
-  if (annual_variation & method == "lm"){
+  if (annual_variation == TRUE & method == "lm"){
     message("Changing method to gmean, because annual trends cannot be calculated
             with method = lm")
     method <- "gmean"
@@ -87,9 +87,11 @@ if(!annual_variation){
 
     trend_sum <- trend_lms %>%
       dplyr::mutate(tidy = purrr::map(model, broom::tidy),
-             trend_log = broom::tidy %>% purrr::map_dbl(function(x) x$estimate[2])) %>%
+                    #trend_log = broom::tidy %>% purrr::map_dbl(function(x) x$estimate[2])) %>%
+                    trend_log = purrr::map(tidy, ~.x$estimate[2])) %>%
       dplyr::select(c(-model, -tidy, -data)) %>%
-      tidyr::unnest(cols = c(draw))%>%
+      #tidyr::unnest(cols = c(draw))%>%
+      tidyr::unnest(cols = c(trend_log)) %>%
       dplyr::mutate(perc_trend = 100*(exp(trend_log)-1),
                     trend_start_year = start_yr,
                     trend_end_year = end_yr)
