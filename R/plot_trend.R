@@ -136,8 +136,22 @@ if(annual_variation){
   # set xlim as needed ensure that the maximum xlim is not more than 4 times the max actual data
 
   upperpred <- max(predict_summarized$pred_q_0.975)
-  upperdata <- max(c(max(gam_summarized$gam_q_0.95),
-                     max(raw_indices$index_q_0.975,na.rm = TRUE)),na.rm = TRUE)
+
+
+  if(is.null(raw_indices)){
+
+    # print("raw_indices not used")
+
+    upperdata <- (max(gam_summarized$gam_q_0.95))
+
+  } else {
+    #print("raw_indices used")
+
+    upperdata <- max(c(max(gam_summarized$gam_q_0.95),
+                       max(raw_indices$index_q_0.975, na.rm = TRUE)),na.rm = TRUE)
+
+  }
+
 
   if(set_upperlimit){
     if(upperpred > (upperdata * upperlimit)) {
@@ -243,7 +257,12 @@ if(annual_variation){
     #ggplot2::geom_point(data = Index_baseline,aes(x = 2024, y = ave_ref_index), col = "blue", size = 2)+
                 }
 
-            }
+  }
+
+  if(annual_variation == FALSE){
+    sp_plot_index <-sp_plot_index +
+      theme(legend.position = "none")
+  }
 
   print(sp_plot_index)
 
