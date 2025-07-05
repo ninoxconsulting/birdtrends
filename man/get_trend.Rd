@@ -21,7 +21,7 @@ get_trend(
 
 \item{method}{character of method used to calculate trend. Two methods available; geometric mean ("gmean" as default )or "lm" linear regression}
 
-\item{annual_variation}{logical Estimate trends that capture some of the annual variation in rate of change. If FALSE (default), then trends are estimated for a single time-period (start_yr : end_yr), if TRUE, then trends are estimated for all possible 1-yr intervals for the selected time period. For example, if start_yr = 2012 and end_yr = 2022, then there will be 10 sets of annual trends estimated (2012:2013, 2013:2014, etc.)}
+\item{annual_variation}{logical estimate trends that capture some of the annual variation in rate of change. If FALSE (default), then trends are estimated for a single time-period (start_yr : end_yr), if TRUE, then trends are estimated for all possible 1-yr intervals for the selected time period. For example, if start_yr = 2012 and end_yr = 2022, then there will be 10 sets of annual trends estimated (2012:2013, 2013:2014, etc.)}
 }
 \value{
 tibble with estimated trend and percent_trend for each draw

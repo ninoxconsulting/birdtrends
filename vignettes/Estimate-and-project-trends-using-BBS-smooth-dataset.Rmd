@@ -61,7 +61,7 @@ fitted_smooths <- fit_smooths(indat3, start_yr = NA, end_yr = NA, longform = TRU
 
 ```{r reformat fitted data from hgam}
 
-trend_sm <- get_trend(fitted_smooths, start_yr = 2014, end_yr = 2022, method = "gmean")
+trend_sm <- get_trend(fitted_smooths, start_yr = 2014, end_yr = 2022, method = "gmean", annual_variation = FALSE)
          
 ```
 
@@ -103,7 +103,10 @@ Note in the plot below we only had the posterior draws input data and not the ra
                              model_indices = fitted_smooths,
                              pred_indices = preds_sm,
                              start_yr = 2014,
-                             end_yr = 2022)
+                             end_yr = 2022,
+                             set_upperlimit = TRUE,
+                             upperlimit = 1.5,
+                             annual_variation = FALSE)
 
    smooth_plot
 ```
@@ -117,7 +120,10 @@ smooth_plot2 <- plot_trend(raw_indices = indat1,
                              model_indices = fitted_smooths,
                              pred_indices = preds_sm,
                              start_yr = 2014,
-                             end_yr = 2022)
+                             end_yr = 2022,
+                             set_upperlimit = TRUE,
+                             upperlimit = 1.5,
+                             annual_variation = FALSE)
 
 smooth_plot2
 
