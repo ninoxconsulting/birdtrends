@@ -20,17 +20,16 @@
 #'}
 plot_trend <- function(raw_indices = NULL,
                        model_indices = fitted_data,
-                       pred_indices =  preds_sm,
+                       pred_indices = preds_sm,
                        start_yr = 2014,
                        end_yr = 2022,
                        ref_yr = 2014,
                        targets = NULL,
                        set_upperlimit = TRUE,
                        upperlimit = 1.5,
-                       annual_variation = FALSE){
-
-#
-# #   ## start testing
+                       annual_variation = FALSE) {
+  #
+  # #   ## start testing
   #  raw_indices = indat1
   #  model_indices = ldf
   #  pred_indices = pred_sm
@@ -41,95 +40,105 @@ plot_trend <- function(raw_indices = NULL,
   #  #targets = index_baseline
   # ## end testing
 
-   if(any(is.na(c(start_yr, end_yr, ref_yr)))){
-     stop("Opps - you are missing year values - please ensure start, end and ref year are defined")
-   }
+  if (any(is.na(c(start_yr, end_yr, ref_yr)))) {
+    stop("Opps - you are missing year values - please ensure start, end and ref year are defined")
+  }
 
-   min_yr <- min(model_indices$year)
-   max_yr <- max(pred_indices$year)
+  min_yr <- min(model_indices$year)
+  max_yr <- max(pred_indices$year)
 
-   if(start_yr < min_yr) {
-       message("`start_yr` is before the date range, using minimum year of ",
-               "the data (", start_yr <- min_yr, ") instead.")
-     }
+  if (start_yr < min_yr) {
+    message(
+      "`start_yr` is before the date range, using minimum year of ",
+      "the data (", start_yr <- min_yr, ") instead."
+    )
+  }
 
-   if(end_yr > max_yr) {
-     message("`end_year` is beyond the date range, using maximum year of ",
-             "the data (", end_yr <- max_yr, ") instead.")
-   }
+  if (end_yr > max_yr) {
+    message(
+      "`end_year` is beyond the date range, using maximum year of ",
+      "the data (", end_yr <- max_yr, ") instead."
+    )
+  }
 
 
   gam_summarized <- model_indices %>%
     dplyr::group_by(year) %>%
-    dplyr::summarize(gam_q_0.025 = stats::quantile(proj_y,0.025),
-              gam_index = stats::quantile(proj_y,0.5),
-              gam_q_0.975 = stats::quantile(proj_y,0.975),
-              gam_q_0.05 = stats::quantile(proj_y,0.05),
-              gam_q_0.95 = stats::quantile(proj_y,0.95),
-              .groups = "keep")
+    dplyr::summarize(
+      gam_q_0.025 = stats::quantile(proj_y, 0.025),
+      gam_index = stats::quantile(proj_y, 0.5),
+      gam_q_0.975 = stats::quantile(proj_y, 0.975),
+      gam_q_0.05 = stats::quantile(proj_y, 0.05),
+      gam_q_0.95 = stats::quantile(proj_y, 0.95),
+      .groups = "keep"
+    )
 
-if(annual_variation){
-  predict_summarized <- pred_indices %>%
-    dplyr::arrange(trend_start_year) %>%
-    dplyr::mutate(trend_years = factor(paste(trend_start_year,trend_end_year,sep = ":"),
-                                          ordered = TRUE)) %>%
-    dplyr::group_by(year,trend_years)%>%
-    dplyr::summarize(pred_q_0.025 = stats::quantile(pred_ind,0.025),
-                     pred_q_0.05 = stats::quantile(pred_ind,0.05),
-                     pred_q_0.1 = stats::quantile(pred_ind,0.10),
-                     pred_q_0.25 = stats::quantile(pred_ind,0.25),
-                     pred_index = stats::quantile(pred_ind,0.5),
-                     pred_q_0.75 = stats::quantile(pred_ind,0.75),
-                     pred_q_0.9 = stats::quantile(pred_ind,0.90),
-                     pred_q_0.95 = stats::quantile(pred_ind,0.95),
-                     pred_q_0.975 = stats::quantile(pred_ind,0.975),
-                     .groups = "keep") %>%
-    dplyr::filter(year >= end_yr)
 
-}else{
-  predict_summarized <- pred_indices %>%
-    dplyr::arrange(trend_start_year) %>%
-    dplyr::mutate(trend_years = factor(paste(min(trend_start_year),max(trend_end_year),sep = ":"),
-                                       ordered = TRUE)) %>%
-    dplyr::group_by(year,trend_years)%>%
-    dplyr::summarize(pred_q_0.025 = stats::quantile(pred_ind,0.025),
-                     pred_q_0.05 = stats::quantile(pred_ind,0.05),
-                     pred_q_0.1 = stats::quantile(pred_ind,0.10),
-                     pred_q_0.25 = stats::quantile(pred_ind,0.25),
-                     pred_index = stats::quantile(pred_ind,0.5),
-                     pred_q_0.75 = stats::quantile(pred_ind,0.75),
-                     pred_q_0.9 = stats::quantile(pred_ind,0.90),
-                     pred_q_0.95 = stats::quantile(pred_ind,0.95),
-                     pred_q_0.975 = stats::quantile(pred_ind,0.975),
-                     .groups = "keep") %>%
-    dplyr::filter(year >= end_yr)
-}
+  if (annual_variation) {
+    predict_summarized <- pred_indices %>%
+      dplyr::arrange(trend_start_year) %>%
+      dplyr::mutate(trend_years = factor(paste(trend_start_year, trend_end_year, sep = ":"),
+        ordered = TRUE
+      )) %>%
+      dplyr::group_by(year, trend_years) %>%
+      dplyr::summarize(
+        pred_q_0.025 = stats::quantile(pred_ind, 0.025),
+        pred_q_0.05 = stats::quantile(pred_ind, 0.05),
+        pred_q_0.1 = stats::quantile(pred_ind, 0.10),
+        pred_q_0.25 = stats::quantile(pred_ind, 0.25),
+        pred_index = stats::quantile(pred_ind, 0.5),
+        pred_q_0.75 = stats::quantile(pred_ind, 0.75),
+        pred_q_0.9 = stats::quantile(pred_ind, 0.90),
+        pred_q_0.95 = stats::quantile(pred_ind, 0.95),
+        pred_q_0.975 = stats::quantile(pred_ind, 0.975),
+        .groups = "keep"
+      ) %>%
+      dplyr::filter(year >= end_yr)
+  } else {
+    predict_summarized <- pred_indices %>%
+      dplyr::arrange(trend_start_year) %>%
+      dplyr::mutate(trend_years = factor(paste(min(trend_start_year), max(trend_end_year), sep = ":"),
+        ordered = TRUE
+      )) %>%
+      dplyr::group_by(year, trend_years) %>%
+      dplyr::summarize(
+        pred_q_0.025 = stats::quantile(pred_ind, 0.025),
+        pred_q_0.05 = stats::quantile(pred_ind, 0.05),
+        pred_q_0.1 = stats::quantile(pred_ind, 0.10),
+        pred_q_0.25 = stats::quantile(pred_ind, 0.25),
+        pred_index = stats::quantile(pred_ind, 0.5),
+        pred_q_0.75 = stats::quantile(pred_ind, 0.75),
+        pred_q_0.9 = stats::quantile(pred_ind, 0.90),
+        pred_q_0.95 = stats::quantile(pred_ind, 0.95),
+        pred_q_0.975 = stats::quantile(pred_ind, 0.975),
+        .groups = "keep"
+      ) %>%
+      dplyr::filter(year >= end_yr)
+  }
   # estimate target recovery
-  if(!is.null(targets)){
-
+  if (!is.null(targets)) {
     # generate a predicted target
 
-    start_target_yr <-  gam_summarized %>%
+    start_target_yr <- gam_summarized %>%
       dplyr::filter(year == ref_yr)
 
     # generate short-term trend
     st_year <- targets$st_year
-    st_year_seq = seq(ref_yr, st_year, 1)
-    st_index_seq = seq(start_target_yr$gam_index, ((targets$st_up_target + targets$st_lu_target)/2), length.out = length(st_year_seq))
+    st_year_seq <- seq(ref_yr, st_year, 1)
+    st_index_seq <- seq(start_target_yr$gam_index, ((targets$st_up_target + targets$st_lu_target) / 2), length.out = length(st_year_seq))
 
     target_indices <- dplyr::as_tibble(cbind(st_year_seq, st_index_seq))
 
 
     # generate long-term trend
     lt_year <- targets$lt_year
-    lt_year_seq = seq(tail(st_year_seq, n = 1), lt_year, 1)
-    lt_index_seq = seq(tail(st_index_seq , n = 1), ((targets$lt_up_target + targets$lt_lu_target)/2), length.out = length(lt_year_seq))
+    lt_year_seq <- seq(tail(st_year_seq, n = 1), lt_year, 1)
+    lt_index_seq <- seq(tail(st_index_seq, n = 1), ((targets$lt_up_target + targets$lt_lu_target) / 2), length.out = length(lt_year_seq))
 
     target_indices_lt <- dplyr::as_tibble(cbind(lt_year_seq, lt_index_seq))
     colnames(target_indices_lt) <- c("st_year_seq", "st_index_seq")
 
     target_indices <- dplyr::bind_rows(target_indices, target_indices_lt)
-
   }
 
 
@@ -138,23 +147,22 @@ if(annual_variation){
   upperpred <- max(predict_summarized$pred_q_0.975)
 
 
-  if(is.null(raw_indices)){
-
+  if (is.null(raw_indices)) {
     # print("raw_indices not used")
 
     upperdata <- (max(gam_summarized$gam_q_0.95))
-
   } else {
-    #print("raw_indices used")
+    # print("raw_indices used")
 
-    upperdata <- max(c(max(gam_summarized$gam_q_0.95),
-                       max(raw_indices$index_q_0.975, na.rm = TRUE)),na.rm = TRUE)
-
+    upperdata <- max(c(
+      max(gam_summarized$gam_q_0.95),
+      max(raw_indices$index_q_0.975, na.rm = TRUE)
+    ), na.rm = TRUE)
   }
 
 
-  if(set_upperlimit){
-    if(upperpred > (upperdata * upperlimit)) {
+  if (set_upperlimit) {
+    if (upperpred > (upperdata * upperlimit)) {
       upperdata_limit <- upperdata * upperlimit
     }
   }
@@ -165,106 +173,111 @@ if(annual_variation){
   sp_plot_index <- ggplot2::ggplot() +
 
     # Vertical line showing the year goals were set
-    ggplot2::geom_vline(xintercept =  ref_yr, linewidth = 2, col = "black", alpha = 0.2)+
-    #geom_text(aes(x =  ref_year+1, y = 0.01),
-    #          label = "<- reference year", col = "black", alpha = 0.2,
-    #          hjust=0, fontface = "bold", size = 2)+
-
-    ggplot2::geom_vline(xintercept = 2026, linewidth =1, col = "black", alpha = 0.4, linetype="dotted")+
-    ggplot2::geom_vline(xintercept = 2046, linewidth =1, col = "black", alpha = 0.4, linetype="dotted")+
+    ggplot2::geom_vline(xintercept = ref_yr, linewidth = 2, col = "black", alpha = 0.2) +
+    ggplot2::geom_vline(xintercept = 2026, linewidth = 1, col = "black", alpha = 0.4, linetype = "dotted") +
+    ggplot2::geom_vline(xintercept = 2046, linewidth = 1, col = "black", alpha = 0.4, linetype = "dotted") +
 
     # gam smooth
-    ggplot2::geom_ribbon(data = gam_summarized, aes(x = year, ymin = gam_q_0.025, ymax = gam_q_0.975), alpha = 0.4, fill = "gray50")+
-    ggplot2::geom_line(data = gam_summarized, aes(x = year, y = gam_index), col = "gray50", linewidth = 1)+
+    ggplot2::geom_ribbon(data = gam_summarized, aes(x = year, ymin = gam_q_0.025, ymax = gam_q_0.975), alpha = 0.4, fill = "gray50") +
+    ggplot2::geom_line(data = gam_summarized, aes(x = year, y = gam_index), col = "gray50", linewidth = 1) +
 
     # predicted projection
-    ggplot2::geom_ribbon(data = subset(predict_summarized, year >= end_yr),
-                         aes(x = year,
-                             ymin = pred_q_0.025,
-                             ymax = pred_q_0.975,
-                             fill = trend_years,
-                             group = trend_years),
-                         alpha = 0.1)+
-    ggplot2::geom_ribbon(data = subset(predict_summarized, year >= end_yr),
-                         aes(x = year,
-                             ymin = pred_q_0.1,
-                             ymax = pred_q_0.9,
-                             fill = trend_years,
-                             group = trend_years),
-                         alpha = 0.2)+
-    ggplot2::geom_ribbon(data = subset(predict_summarized, year >= end_yr),
-                         aes(x = year,
-                             ymin = pred_q_0.25,
-                             ymax = pred_q_0.75,
-                             fill = trend_years,
-                             group = trend_years),
-                         alpha = 0.2)+
-    ggplot2::geom_line(data = subset(predict_summarized, year >= end_yr),
-                       aes(x = year,
-                           y = pred_index,
-                           colour = trend_years,
-                           group = trend_years),
-                       linewidth = 1)+
+    ggplot2::geom_ribbon(
+      data = subset(predict_summarized, year >= end_yr),
+      aes(
+        x = year,
+        ymin = pred_q_0.025,
+        ymax = pred_q_0.975,
+        fill = trend_years,
+        group = trend_years
+      ),
+      alpha = 0.1
+    ) +
+    ggplot2::geom_ribbon(
+      data = subset(predict_summarized, year >= end_yr),
+      aes(
+        x = year,
+        ymin = pred_q_0.1,
+        ymax = pred_q_0.9,
+        fill = trend_years,
+        group = trend_years
+      ),
+      alpha = 0.2
+    ) +
+    ggplot2::geom_ribbon(
+      data = subset(predict_summarized, year >= end_yr),
+      aes(
+        x = year,
+        ymin = pred_q_0.25,
+        ymax = pred_q_0.75,
+        fill = trend_years,
+        group = trend_years
+      ),
+      alpha = 0.2
+    ) +
+    ggplot2::geom_line(
+      data = subset(predict_summarized, year >= end_yr),
+      aes(
+        x = year,
+        y = pred_index,
+        colour = trend_years,
+        group = trend_years
+      ),
+      linewidth = 1
+    ) +
+    ggplot2::ylab("Annual Index of Abundance") +
+    ggplot2::xlab("Year") +
+    ggplot2::theme_bw() +
+    ggplot2::scale_colour_viridis_d(
+      aesthetics = c("fill", "colour"),
+      # guide = "coloursteps",
+      na.value = NA,
+      name = "Projected\ntrend"
+    )
 
-    ggplot2::ylab("Annual Index of Abundance")+
-    ggplot2::xlab("Year")+
-    ggplot2::theme_bw()+
-    ggplot2::scale_colour_viridis_d(aesthetics = c("fill","colour"),
-                                    #guide = "coloursteps",
-                                    na.value = NA,
-                                    name = "Projected\ntrend")
-
-  if(set_upperlimit == TRUE) {
+  if (set_upperlimit == TRUE) {
     sp_plot_index <- sp_plot_index +
-      ggplot2::coord_cartesian(ylim=c(0, upperdata))
-    }
+      ggplot2::coord_cartesian(ylim = c(0, upperdata))
+  }
 
 
-  if(!is.null(raw_indices)){
-
-    sp_plot_index <-  sp_plot_index +
+  if (!is.null(raw_indices)) {
+    sp_plot_index <- sp_plot_index +
 
       # Observed indices
-      ggplot2::geom_errorbar(data = subset(raw_indices, year <= max(raw_indices$year)),aes(x = year, ymin = index_q_0.025, ymax = index_q_0.975), width = 0, col = "gray30")+
-      ggplot2::geom_point(data = subset(raw_indices, year <= max(raw_indices$year)),aes(x = year, y = index), col = "gray30")
-
+      ggplot2::geom_errorbar(data = subset(raw_indices, year <= max(raw_indices$year)), aes(x = year, ymin = index_q_0.025, ymax = index_q_0.975), width = 0, col = "gray30") +
+      ggplot2::geom_point(data = subset(raw_indices, year <= max(raw_indices$year)), aes(x = year, y = index), col = "gray30")
   }
 
   # note if no raw_indices is supplied then we can estimate these from the projected data
 
-  if(is.null(raw_indices)){
+  if (is.null(raw_indices)) {
+    sp_plot_index <- sp_plot_index +
 
-    sp_plot_index <-  sp_plot_index +
-
-      ggplot2::geom_errorbar(data = subset(gam_summarized, year <= max(gam_summarized$year)),aes(x = year, ymin = gam_q_0.05, ymax = gam_q_0.95), width = 0, col = "gray30")+
-      ggplot2::geom_point(data = subset(gam_summarized , year <= max(gam_summarized$year)),aes(x = year, y = gam_index), col = "gray30")
-
+      ggplot2::geom_errorbar(data = subset(gam_summarized, year <= max(gam_summarized$year)), aes(x = year, ymin = gam_q_0.05, ymax = gam_q_0.95), width = 0, col = "gray30") +
+      ggplot2::geom_point(data = subset(gam_summarized, year <= max(gam_summarized$year)), aes(x = year, y = gam_index), col = "gray30")
   }
 
-  if(!is.null(targets)){
+  if (!is.null(targets)) {
+    sp_plot_index <- sp_plot_index +
 
-    sp_plot_index <-  sp_plot_index +
+      # target range - short term
+      ggplot2::geom_errorbar(data = targets, aes(x = st_year, ymin = st_lu_target, ymax = st_up_target), width = 1, linewidth = 0.75, col = "blue") +
+      ggplot2::geom_line(data = target_indices, aes(x = st_year_seq, y = st_index_seq), col = "blue", linewidth = 1) +
+      # ggplot2::geom_line(data = target_indices_lt, aes(x = lt_year_seq, y = lt_index_seq), col = "blue", linewidth = 1)+
+      # ggplot2::geom_linerange(data = targets , aes(x = st_year, ymin = st_lu_target, ymax = st_up_target), col = "blue")+
 
-    # target range - short term
-    ggplot2::geom_errorbar(data = targets , aes(x = st_year, ymin = st_lu_target, ymax = st_up_target), width = 1, linewidth = 0.75,col = "blue")+
-    ggplot2::geom_line(data = target_indices, aes(x = st_year_seq, y = st_index_seq), col = "blue", linewidth = 1)+
-    #ggplot2::geom_line(data = target_indices_lt, aes(x = lt_year_seq, y = lt_index_seq), col = "blue", linewidth = 1)+
-    #ggplot2::geom_linerange(data = targets , aes(x = st_year, ymin = st_lu_target, ymax = st_up_target), col = "blue")+
-
-    if(!is.na(targets$lt_year)){
-    # target range - short term
-    ggplot2::geom_errorbar(data = targets ,aes(x = lt_year, ymin = lt_lu_target, ymax =lt_up_target), width = 1, linewidth = 0.75, col = "blue")
-    #ggplot2::geom_point(data = Index_baseline,aes(x = 2024, y = ave_ref_index), col = "blue", size = 2)+
-                }
-
+      if (!is.na(targets$lt_year)) {
+        # target range - short term
+        ggplot2::geom_errorbar(data = targets, aes(x = lt_year, ymin = lt_lu_target, ymax = lt_up_target), width = 1, linewidth = 0.75, col = "blue")
+        # ggplot2::geom_point(data = Index_baseline,aes(x = 2024, y = ave_ref_index), col = "blue", size = 2)+
+      }
   }
 
-  if(annual_variation == FALSE){
-    sp_plot_index <-sp_plot_index +
+  if (annual_variation == FALSE) {
+    sp_plot_index <- sp_plot_index +
       theme(legend.position = "none")
   }
 
   print(sp_plot_index)
-
- }
-
+}

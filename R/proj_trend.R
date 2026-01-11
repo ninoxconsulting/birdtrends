@@ -15,50 +15,53 @@
 proj_trend <- function(proj_output,
                        trend_output,
                        start_yr = NA,
-                       proj_yr = 2046){
-
+                       proj_yr = 2046) {
   ## testing
   # proj_output <- ldf_smooths
   # trend_output <- trend_sm
   # start_yr = 2023
   # proj_yr = 2046
 
-  #proj_output = ldf
-  #trend_output  = trend_sm
-  #proj_output  = indata1
-  #trend_output = tr
-
-  if(is.na(start_yr)){
-    start_yr <- max_yr <- max(proj_output$year)+ 1
+  if (is.na(start_yr)) {
+    start_yr <- max_yr <- max(proj_output$year) + 1
   }
 
-  if(start_yr - (max(proj_output$year)) > 1){
+  if (start_yr - (max(proj_output$year)) > 1) {
     stop("Start year of prediction is too far in advance, choose a year no more than 1 year more than maximum year of data")
   }
 
+  if ("trend_end_year" %in% names(trend_output)) {
     trend_end_years <- unique(trend_output$trend_end_year)
-
+  } else {
+    trend_end_years <- max(proj_output$year)
+    trend_output <- trend_output %>%
+      dplyr::mutate(trend_end_year = trend_end_years)
+  }
 
   pred_inds_start_yr <- proj_output %>%
-    dplyr::filter(year == start_yr-1) %>%
+    dplyr::filter(year == start_yr - 1) %>%
     dplyr::rename(starting_pred_ind = proj_y) %>%
     dplyr::select(-year)
 
-  pred_out <- expand.grid(draw = 1:max(proj_output$draw),
-                          year = min(proj_output$year):proj_yr,
-                          trend_end_year = trend_end_years) %>%
+  pred_out <- expand.grid(
+    draw = 1:max(proj_output$draw),
+    year = min(proj_output$year):proj_yr,
+    trend_end_year = trend_end_years
+  ) %>%
     dplyr::full_join(trend_output,
-                     by = c("draw","trend_end_year")) %>%
+      by = c("draw", "trend_end_year")
+    ) %>%
     dplyr::full_join(proj_output,
-                     by = c("draw","year")) %>%
+      by = c("draw", "year")
+    ) %>%
     dplyr::full_join(pred_inds_start_yr,
-                     by = "draw") %>%
+      by = "draw"
+    ) %>%
     dplyr::mutate(pred_ind = ifelse(year < start_yr,
-                                    proj_y,
-                                  exp(log(starting_pred_ind) + (trend_log*(year-(start_yr-1))))))
+      proj_y,
+      exp(log(starting_pred_ind) + (trend_log * (year - (start_yr - 1))))
+    ))
 
 
   return(pred_out)
-
 }
-
