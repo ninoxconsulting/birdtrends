@@ -276,7 +276,7 @@ plot_trend <- function(raw_indices = NULL,
 
   if (annual_variation == FALSE) {
     sp_plot_index <- sp_plot_index +
-      theme(legend.position = "none")
+      ggplot2::theme(legend.position = "none")
   }
 
   print(sp_plot_index)
