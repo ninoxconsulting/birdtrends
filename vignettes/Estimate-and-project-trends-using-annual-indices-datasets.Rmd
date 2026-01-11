@@ -9,7 +9,6 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -138,7 +137,7 @@ Where no dates are specified, the minimum and maximum years will be used. Two me
 
 ```{r}
 
-trend_sm <- get_trend(fitted_data, start_yr = 2014, end_yr = 2022, method = "gmean")
+trend_sm <- get_trend(fitted_data, start_yr = 2014, end_yr = 2022, method = "gmean", annual_variation = FALSE)
 
 ```
 
