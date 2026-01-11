@@ -9,6 +9,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -230,28 +231,4 @@ hgams_plot_target <- plot_trend(raw_indices = indat1,
 We can use the output of the trends to estimate uncertainty around meeting future trends. In the example above we can estimate the probability that we will meet our short- term or long-term targets. 
 
 Our theoretical targets for the above example is short term (decrease of 2% to increase of 1%) and long term target (2046) is (increase between 5 to 10% )
-
-
-```{r, eval = FALSE}
-# 
-# prop_st <- calculate_probs(predicted_trends = preds_sm,
-#                 ref_year = 2014, 
-#                 targ_year = 2026, 
-#                 prob_decrease = 2,
-#                 prob_increase = 1)
-# 
-# prop_lt <- calculate_probs(predicted_trends = preds_sm,
-#                 ref_year = 2014, 
-#                 targ_year = 2046,
-#                 prob_increase = c(5,10))
-# 
-# 
-# prop_st
-# prop_lt 
-
-
-```
-
-
-
 

@@ -10,6 +10,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
   warning = FALSE,
   message = FALSE,
   collapse = TRUE,
@@ -115,6 +116,7 @@ plot_target_short <- plot_trend(raw_indices = indat1,
                                 targets = index_baseline) +
   labs(title = "Projection of recent trend from 2014-2022")+
   scale_y_continuous(limits = c(0,NA))
+
 # generate short term plot 
 plot_target_previous <- plot_trend(raw_indices = indat1,
                                    model_indices = fitted_data,
@@ -169,9 +171,12 @@ med <- as.numeric(dif_trend[2])
 
 ```
 
+```{r}
 
-The short-term recent trend since 2014 is `r med`% greater from the trend between 2004 and
-2014, and that difference is clearly positive, with a 95% confidence interval from `r pc5` to `r pc95`. 
+#The short-term recent trend since 2014 is `r med`% greater from the trend between 2004 and
+#2014, and that difference is clearly positive, with a 95% confidence interval from `r pc5` to `r pc95`. 
+```
+
 
 This comparison shows that if the short-term trend estimated between 2004 and 2014 had continued, the species would be further from reaching the targets. So while the ongoing decline is troubling, the species recent trends suggest the population is closer to meeting the targets than they were in 2014.
 
