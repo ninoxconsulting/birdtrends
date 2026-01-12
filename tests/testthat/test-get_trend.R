@@ -1,10 +1,10 @@
 test_that("get_trend results correct", {
   tr_dat <- readRDS(test_path("testdata", "fit_hgam_model.rds"))
-  tr = get_trend(readRDS(test_path("testdata", "fit_hgam_model.rds")))
-  expect_equal(ncol(tr), 3)
+  tr = get_trend(readRDS(test_path("testdata", "fit_hgam_model.rds")), start_yr = 1968, end_yr = 1977,annual_variation = FALSE)
+  expect_equal(ncol(tr), 5)
   expect_equal(length(tr$draw), 10)
-  trlm = get_trend(tr_dat, method = "lm")
-  expect_equal(ncol(trlm), 3)
+  trlm = get_trend(tr_dat, method = "lm",start_yr = 1968, end_yr = 1977)
+  expect_equal(ncol(trlm), 5)
 })
 
 test_that("get_trend fails appropriately", {

@@ -3,7 +3,7 @@ test_that("get_trend fails appropriately", {
   cp = calculate_probs(preds_sm, ref_year = 1977, targ_year = 2011, prob_decrease = NULL,prob_increase = 5)
   expect_silent(calculate_probs(preds_sm, ref_year = 1977, targ_year = 2011, prob_decrease = NULL,prob_increase = 5))
   expect_equal(ncol(cp), 3)
-  expect_equal(cp$prob_increase_5_percent, 100)
+  expect_equal(cp$prob_increase_5_percent, 1)
 })
 
 test_that("get_trend warnings appropriate", {

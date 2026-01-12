@@ -100,7 +100,8 @@ fit_hgam <- function(indata, start_yr = NA, end_yr = NA,  n_knots = NA, longform
   fit_gam <- mod$sample(data = stan_data,
                         parallel_chains = 4,
                         refresh = 0,
-                        adapt_delta = 0.95)
+                        adapt_delta = 0.95,
+                        show_exceptions = FALSE)
 
 
   # check this with Adam:  as it only shows q5 and not : q2_5

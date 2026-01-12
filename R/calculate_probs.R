@@ -70,8 +70,11 @@ calculate_probs <- function(
     dplyr::select(-proj_y)
 
 
-  tyears <-  tidyr::pivot_wider(tyears, values_from = pred_ind, names_from = year)
-  colnames(tyears)= c("draw", "ref_yr", "targ_year")
+  tyears <-  tidyr::pivot_wider(tyears, values_from = pred_ind, names_from = year,
+                                names_prefix = "YR_") %>%
+    dplyr::rename(ref_yr = dplyr::matches(paste0("YR_",ref_year)),
+                  targ_year = dplyr::matches(paste0("YR_",targ_year)))
+  #colnames(tyears)= c("draw", "ref_yr", "targ_year")
 
   ltyears <- tyears |>
     dplyr::mutate(ch = targ_year/ref_yr) |>
@@ -99,8 +102,9 @@ calculate_probs <- function(
   # filter and select only cols needed.
 
   out <- ltyears |>
-    dplyr::mutate(across(starts_with("prob"), ~ sum(.x, na.rm = TRUE)/length(.x)*100)) %>%
-    dplyr::select(starts_with("p"))%>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(across(starts_with("prob"), ~ sum(.x, na.rm = TRUE)/length(.x))) %>%
+    dplyr::select(starts_with("prob"))%>%
     dplyr::distinct()%>%
     dplyr::mutate(ref_year = ref_year, target_yr = targ_year)
 

@@ -13,77 +13,55 @@
 #'  trend_sm <- predict_trend(ldf_smooths, trend_sm, start_yr = 2023, proj_yr = 2046)
 #'}
 proj_trend <- function(proj_output,
-                          trend_output,
-                          start_yr = NA,
-                          proj_yr = 2046){
-
+                       trend_output,
+                       start_yr = NA,
+                       proj_yr = 2046) {
   ## testing
   # proj_output <- ldf_smooths
   # trend_output <- trend_sm
   # start_yr = 2023
   # proj_yr = 2046
 
-  #proj_output = ldf
-  #trend_output  = trend_sm
-  #proj_output  = indata1
-  #trend_output = tr
-
-  if(is.na(start_yr)){
-    start_yr <- max_yr <- max(proj_output$year)+ 1
+  if (is.na(start_yr)) {
+    start_yr <- max_yr <- max(proj_output$year) + 1
   }
 
-  if(start_yr - (max(proj_output$year)) > 1){
+  if (start_yr - (max(proj_output$year)) > 1) {
     stop("Start year of prediction is too far in advance, choose a year no more than 1 year more than maximum year of data")
   }
 
-
-  # generate a table for inputs
-  pred_out <- proj_output[1,] %>% dplyr::mutate(pred_ind = 0)
-
-  pbar <- txtProgressBar()
-  message("hold tight, running the numbers!")
-
-  #TODO: update this portion to purr::map..
-
-  for( i in trend_output$draw){
-
-    # testing line
-    # i  = trend_output$draw[2]
-    # end testing line
-
-    setTxtProgressBar(pbar, i/length(trend_output$draw))
-
-    trend_draw <- trend_output %>% dplyr::filter(draw == i) %>% dplyr::pull(trend_log)
-
-    proj_draw <- proj_output %>% dplyr::filter(draw == i)
-
-
-    # not sure where to cut of projections here:
-    #ie build trend from project from 2014 - 2022
-    # project to 2024
-    # project to 2046
-
-    proj_draw <- proj_draw %>%
-      tidyr::complete(year = seq(start_yr, max(proj_yr), 1)) %>%
-      dplyr::mutate(draw = i) %>%
-      #filter(year >= proj_start_yr)
-      dplyr::mutate(pred_ind = proj_y)%>%
-      dplyr::arrange(year)
-
-    #  calculate future projections starting in year of goal
-
-    for (y in seq(start_yr, proj_yr)) {
-      proj_draw$pred_ind[proj_draw$year == y] <- proj_draw$pred_ind[proj_draw$year == (y-1)] *exp(trend_draw)
-    }
-
-    pred_out <- dplyr::bind_rows(pred_out, proj_draw)
-
+  if ("trend_end_year" %in% names(trend_output)) {
+    trend_end_years <- unique(trend_output$trend_end_year)
+  } else {
+    trend_end_years <- max(proj_output$year)
+    trend_output <- trend_output %>%
+      dplyr::mutate(trend_end_year = trend_end_years)
   }
 
-  # clean up the output
-  pred_out <- pred_out[-1,]
+  pred_inds_start_yr <- proj_output %>%
+    dplyr::filter(year == start_yr - 1) %>%
+    dplyr::rename(starting_pred_ind = proj_y) %>%
+    dplyr::select(-year)
+
+  pred_out <- expand.grid(
+    draw = 1:max(proj_output$draw),
+    year = min(proj_output$year):proj_yr,
+    trend_end_year = trend_end_years
+  ) %>%
+    dplyr::full_join(trend_output,
+      by = c("draw", "trend_end_year")
+    ) %>%
+    dplyr::full_join(proj_output,
+      by = c("draw", "year")
+    ) %>%
+    dplyr::full_join(pred_inds_start_yr,
+      by = "draw"
+    ) %>%
+    dplyr::mutate(pred_ind = ifelse(year < start_yr,
+      proj_y,
+      exp(log(starting_pred_ind) + (trend_log * (year - (start_yr - 1))))
+    ))
+
 
   return(pred_out)
-
 }
-

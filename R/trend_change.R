@@ -49,11 +49,23 @@ trend_change <- function(
 
   # for each draw subtract target year from ref year (2024) - 2014
   tyears <- dplyr::filter(projected_trends, year %in% c(ref_year, targ_year)) |>
-    dplyr::select(-proj_y)
+    dplyr::select(-proj_y, -trend_end_year, -trend_log, -perc_trend, -trend_start_year,  -starting_pred_ind)
 
+## this code is now throwing a new error and converting to a list? so updated to manual version
+# tyears <-  tidyr::pivot_wider(tyears, values_from = pred_ind, names_from = year)
+#  colnames(tyears)= c("draw", "ref_yr", "targ_year")
 
-  tyears <-  tidyr::pivot_wider(tyears, values_from = pred_ind, names_from = year)
-  colnames(tyears)= c("draw", "ref_yr", "targ_year")
+  tyears_ref <- dplyr::filter(tyears, year == ref_year) |>
+    dplyr::select(draw, pred_ind) |>
+    dplyr::rename(ref_yr = pred_ind)
+
+  tyears_targ <- dplyr::filter(tyears, year == targ_year) |>
+    dplyr::select(draw, pred_ind) |>
+    dplyr::rename(targ_year = pred_ind) |>
+    dplyr::select(-draw)
+
+  tyears <- cbind(tyears_ref, tyears_targ)
+
 
   ltyears <- tyears |>
     dplyr::mutate(ch = targ_year/ref_yr) |>
