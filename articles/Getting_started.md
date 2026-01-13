@@ -1,0 +1,44 @@
+# Getting_started
+
+The birdtrends package enables users to estimate trends of populations
+into the future based on a variety of input data types.
+
+## Getting set-up
+
+1.  Install birdtrends
+
+``` r
+remotes::install_github("ninoxconsulting/birdtrends")
+```
+
+2.  Set up modelling connections.
+
+The birdtrends package uses the cmdstanr package to run the hierarchical
+GAM models using [Stan](https://mc-stan.org/). We can install cmdstanr
+with:
+
+``` r
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
+                                       getOption("repos")))
+```
+
+The cmdstanr package in turn requires the `cmdstan` program to run Stan
+programs. You can use the `cmdstanr` package to `cmdstan`:
+
+``` r
+cmdstanr::install_cmdstan()
+```
+
+And then check that `cmdstan` was installed properly:
+
+``` r
+cmdstanr::check_cmdstan_toolchain()
+```
+
+## What dataset can be used?
+
+## what type of models can we use?
+
+## How to estimate trends
+
+## Output summaries

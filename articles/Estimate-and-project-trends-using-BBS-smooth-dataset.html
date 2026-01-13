@@ -8,8 +8,8 @@
 <title>Estimate-and-project-trends-using-BBS-smooth-dataset • birdtrends</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Estimate-and-project-trends-using-BBS-smooth-dataset">
 </head>
 <body>
@@ -172,7 +172,7 @@ longform parameter.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">trend_sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_trend.html">get_trend</a></span><span class="op">(</span><span class="va">fitted_smooths</span>, start_yr <span class="op">=</span> <span class="fl">2014</span>, end_yr <span class="op">=</span> <span class="fl">2022</span>, method <span class="op">=</span> <span class="st">"gmean"</span><span class="op">)</span></span>
+<span><span class="va">trend_sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_trend.html">get_trend</a></span><span class="op">(</span><span class="va">fitted_smooths</span>, start_yr <span class="op">=</span> <span class="fl">2014</span>, end_yr <span class="op">=</span> <span class="fl">2022</span>, method <span class="op">=</span> <span class="st">"gmean"</span>, annual_variation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>         </span></code></pre></div>
 <p>We can summarise the trend estimates to provide a median and
 confidence internal</p>
@@ -196,8 +196,7 @@ our given years to project into the future.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">preds_sm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/proj_trend.html">proj_trend</a></span><span class="op">(</span><span class="va">fitted_smooths</span>, <span class="va">trend_sm</span>, start_yr <span class="op">=</span> <span class="fl">2023</span>, proj_yr <span class="op">=</span> <span class="fl">2050</span><span class="op">)</span></span>
-<span><span class="co">#&gt; hold tight, running the numbers!</span></span>
-<span><span class="co">#&gt; ================================================================================</span></span></code></pre></div>
+<span>     </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-the-projected-values">5. Plot the projected values<a class="anchor" aria-label="anchor" href="#plot-the-projected-values"></a>
@@ -214,12 +213,15 @@ supplied, values are based on 95% of distribution of data.</p>
 <span>                             model_indices <span class="op">=</span> <span class="va">fitted_smooths</span>,</span>
 <span>                             pred_indices <span class="op">=</span> <span class="va">preds_sm</span>,</span>
 <span>                             start_yr <span class="op">=</span> <span class="fl">2014</span>,</span>
-<span>                             end_yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<span>                             end_yr <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                             set_upperlimit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                             upperlimit <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>                             annual_variation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span>   <span class="va">smooth_plot</span></span></code></pre></div>
-<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-5-2.png" width="700">
+<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-5-2.png" class="r-plt" alt="" width="700">
 Alternatively we can add our raw annual indices data set to improve the
 aesthetics of the plot.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -230,12 +232,15 @@ aesthetics of the plot.</p>
 <span>                             model_indices <span class="op">=</span> <span class="va">fitted_smooths</span>,</span>
 <span>                             pred_indices <span class="op">=</span> <span class="va">preds_sm</span>,</span>
 <span>                             start_yr <span class="op">=</span> <span class="fl">2014</span>,</span>
-<span>                             end_yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<span>                             end_yr <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>                             set_upperlimit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                             upperlimit <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>                             annual_variation <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">smooth_plot2</span></span></code></pre></div>
-<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-6-2.png" width="700"></p>
+<p><img src="Estimate-and-project-trends-using-BBS-smooth-dataset_files/figure-html/unnamed-chunk-6-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -249,7 +254,7 @@ aesthetics of the plot.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
