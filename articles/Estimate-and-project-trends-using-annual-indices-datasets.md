@@ -69,25 +69,25 @@ fitted_data <- fit_hgam(indat1, start_yr = NA, end_yr = NA, n_knots = NA)
 #> 
 #> Chain 1 finished in 2.0 seconds.
 #> Chain 2 finished in 2.1 seconds.
-#> Chain 3 finished in 2.1 seconds.
 #> Chain 4 finished in 2.1 seconds.
+#> Chain 3 finished in 2.1 seconds.
 #> 
 #> All 4 chains finished successfully.
 #> Mean chain execution time: 2.1 seconds.
-#> Total execution time: 2.2 seconds.
+#> Total execution time: 2.3 seconds.
 
 # output the same data in a long format for plotting purposes 
 fitted_data_wide <- fit_hgam(indat1, start_yr = NA, end_yr = NA, n_knots = NA, longform = FALSE)
 #> Running MCMC with 4 parallel chains...
 #> 
-#> Chain 4 finished in 2.0 seconds.
 #> Chain 1 finished in 2.1 seconds.
-#> Chain 2 finished in 2.1 seconds.
 #> Chain 3 finished in 2.1 seconds.
+#> Chain 4 finished in 2.0 seconds.
+#> Chain 2 finished in 2.2 seconds.
 #> 
 #> All 4 chains finished successfully.
 #> Mean chain execution time: 2.1 seconds.
-#> Total execution time: 2.2 seconds.
+#> Total execution time: 2.3 seconds.
 
 
 ## We can also define the start and end time points or number of knots 

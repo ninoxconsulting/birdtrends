@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ninoxconsulting/birdtrends/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ninoxconsulting/birdtrends/blob/v1.0/DESCRIPTION)
 
 Perkins G, Smith A (2026). *birdtrends: Estimate Trends Based On
 Modelled Annual Indices Or Related Inputs*. R package version
